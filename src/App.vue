@@ -40,9 +40,22 @@ const todos = ref(getTodosFromLocalStorage());
 const current = ref('all');
 
 const computedTodos = computed(() => {
-  return current.value === 'all'
-    ? todos.value
-    : todos.value.filter((v) => v.completed);
+  const filteredTodos =
+    current.value === 'all'
+      ? todos.value
+      : todos.value.filter((v) => v.completed);
+
+  return [...filteredTodos].sort((a, b) => {
+    return Number(a.completed) - Number(b.completed);
+  });
+});
+
+const completedCount = computed(() => {
+  return todos.value.filter((v) => v.completed).length;
+});
+
+const remainingCount = computed(() => {
+  return todos.value.length - completedCount.value;
 });
 
 const updateTab = (tab) => {
@@ -80,7 +93,13 @@ const editTodo = (item, newMsg) => {
 </script>
 <template>
   <div class="todo">
-    <TodoHeader :current @update-tab="updateTab" />
+    <TodoHeader
+      :current="current"
+      :total="todos.length"
+      :completed="completedCount"
+      :remaining="remainingCount"
+      @update-tab="updateTab"
+    />
     <TodoList
       :todos="computedTodos"
       @delete-todo="deleteTodo"
