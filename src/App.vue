@@ -25,11 +25,18 @@
 
 -->
 <script setup>
+import { ref, computed } from 'vue';
+import {
+  setTodoLocalStorage,
+  getTodosFromLocalStorage,
+} from './hooks/useLocalStorage';
+
+//Components
+import TodoInput from './components/TodoInput.vue';
 import TodoHeader from './components/TodoHeader.vue';
 import TodoList from './components/TodoList.vue';
-import TodoInput from './components/TodoInput.vue';
-import { ref, computed } from 'vue';
-const todos = ref([]);
+
+const todos = ref(getTodosFromLocalStorage());
 const current = ref('all');
 
 const computedTodos = computed(() => {
@@ -45,38 +52,30 @@ const updateTab = (tab) => {
 const addTodo = (inputMsg) => {
   todos.value.push({
     id: new Date().getTime(),
-    msg: inputMsg,
+    msg: inputMsg.trim(),
     completed: false,
     editable: false,
   });
+  setTodoLocalStorage(todos.value);
 };
 
 const deleteTodo = (id) => {
   todos.value = todos.value.filter((v) => v.id !== id);
+  setTodoLocalStorage(todos.value);
 };
 
 const updateTodo = (id) => {
   todos.value = todos.value.map((v) =>
     v.id === id ? { ...v, completed: !v.completed } : v,
   );
-};
-
-const toggleEditTodo = (id) => {
-  todos.value = todos.value.map((v) => {
-    return v.id === id ? { ...v, editable: !v.editable } : v;
-  });
+  setTodoLocalStorage(todos.value);
 };
 
 const editTodo = (item, newMsg) => {
-  //TODO
-  // 1. item의 editable값을 toggle 한다
-  // 2. editable이 true면 (1)input 폼을 보여주고 value에 msg를 넣어준다. (2) 수정아이콘이 완료 아이콘으로 바뀐다
-  // 3. 완료 버튼을 누르면 item의 msg를 새로 입력한 값으로 변경한다
-  // 4. editable을 false로 바꾼다.
   todos.value = todos.value.map((v) => {
-    return v.id === item.id ? { ...v, msg: newMsg } : v;
+    return v.id === item.id ? { ...v, msg: newMsg.trim() } : v;
   });
-  toggleEditTodo(item.id);
+  setTodoLocalStorage(todos.value);
 };
 </script>
 <template>
@@ -86,7 +85,6 @@ const editTodo = (item, newMsg) => {
       :todos="computedTodos"
       @delete-todo="deleteTodo"
       @update-todo="updateTodo"
-      @toggle-edit-todo="toggleEditTodo"
       @edit-todo="editTodo"
     />
     <TodoInput @add-todo="addTodo" />

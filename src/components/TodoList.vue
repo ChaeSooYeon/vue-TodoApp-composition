@@ -10,14 +10,10 @@
 import { ref } from 'vue';
 
 const props = defineProps(['todos']);
-const emit = defineEmits([
-  'delete-todo',
-  'update-todo',
-  'edit-todo',
-  'toggleEditTodo',
-]);
+const emit = defineEmits(['delete-todo', 'update-todo', 'edit-todo']);
 
 const newMsg = ref('');
+const editingId = ref(null);
 
 const deleteTodo = (id) => {
   emit('delete-todo', id);
@@ -27,10 +23,17 @@ const updateTodo = (id) => {
 };
 const editTodo = (item) => {
   emit('edit-todo', item, newMsg.value);
+  editingId.value = null;
+  newMsg.value = '';
 };
-const toggleEditTodo = (id, prvMsg) => {
-  emit('toggle-edit-todo', id);
-  newMsg.value = prvMsg;
+const toggleEditTodo = (item) => {
+  if (editingId.value === item.id) {
+    editingId.value = null;
+    newMsg.value = '';
+    return;
+  }
+  editingId.value = item.id;
+  newMsg.value = item.msg;
 };
 </script>
 <template>
@@ -43,31 +46,30 @@ const toggleEditTodo = (id, prvMsg) => {
     >
       <input
         type="checkbox"
-        :id="`chk${item.id.toString()}`"
+        :id="`chk${item.id}`"
         :checked="item.completed"
         @click="updateTodo(item.id)"
       />
-      <label
-        :for="`chk${item.id.toString()}`"
-        class="todo__checkbox-label"
-      ></label>
+      <label :for="`chk${item.id}`" class="todo__checkbox-label"></label>
       <!-- editable -->
-      <span v-if="!item.editable" class="todo__item-text">{{ item.msg }}</span>
+      <span v-if="editingId !== item.id" class="todo__item-text">{{
+        item.msg
+      }}</span>
       <input
-        v-else-if="item.editable"
+        v-else
         class="todo__item-text--editable"
         type="text"
         v-model="newMsg"
         @keydown.enter="editTodo(item)"
       />
       <span
-        v-if="!item.editable"
+        v-if="editingId !== item.id"
         class="btn material-symbols-outlined todo__edit-icon"
-        @click="toggleEditTodo(item.id, item.msg)"
+        @click="toggleEditTodo(item)"
         >edit</span
       >
       <span
-        v-else-if="item.editable"
+        v-else
         class="btn material-symbols-outlined"
         @click="editTodo(item)"
       >

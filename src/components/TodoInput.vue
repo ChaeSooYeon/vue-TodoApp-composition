@@ -6,20 +6,15 @@
         이벤트를 등록하자 
 
 -->
-<script>
-export default {
-  data() {
-    return {
-      inputMsg: '', // 데이터 정의
-    };
-  },
-  emits: ['addTodo'],
-  methods: {
-    addTodo() {
-      this.$emit('addTodo', this.inputMsg); // 부모 컴포넌트 이벤트 호출
-      this.inputMsg = ''; // 입력 데이터 초기화
-    },
-  },
+<script setup>
+import { ref } from 'vue';
+
+const inputMsg = ref('');
+const emit = defineEmits(['addTodo']);
+
+const addTodo = () => {
+  emit('addTodo', inputMsg.value); // 부모 컴포넌트 이벤트 호출
+  inputMsg.value = ''; // 입력 데이터 초기화
 };
 </script>
 <template>
