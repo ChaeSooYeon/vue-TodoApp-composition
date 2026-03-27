@@ -1,4 +1,7 @@
 <script setup>
+import TodoSummary from './TodoSummary.vue';
+import TodoTabs from './TodoTabs.vue';
+
 defineProps({
   current: {
     type: String,
@@ -32,36 +35,12 @@ const updateTab = (tab) => {
     <p class="subtitle">
       남은 할 일 {{ remaining }}개, 완료 {{ completed }}개
     </p>
-    <div class="summary">
-      <div class="summary-card u-card u-stat-card">
-        <span class="summary-label">전체</span>
-        <strong class="summary-value">{{ total }}</strong>
-      </div>
-      <div class="summary-card u-card u-stat-card">
-        <span class="summary-label">완료</span>
-        <strong class="summary-value">{{ completed }}</strong>
-      </div>
-      <div class="summary-card u-card u-stat-card">
-        <span class="summary-label">진행 중</span>
-        <strong class="summary-value">{{ remaining }}</strong>
-      </div>
-    </div>
-    <ul class="tabs u-segmented">
-      <li
-        class="u-segmented-item"
-        :class="{ 'u-segmented-active': current === 'all' }"
-        @click="updateTab('all')"
-      >
-        전체
-      </li>
-      <li
-        class="u-segmented-item"
-        :class="{ 'u-segmented-active': current === 'completed' }"
-        @click="updateTab('completed')"
-      >
-        완료
-      </li>
-    </ul>
+    <TodoSummary
+      :total="total"
+      :completed="completed"
+      :remaining="remaining"
+    />
+    <TodoTabs :current="current" @update-tab="updateTab" />
   </div>
 </template>
 
@@ -92,45 +71,9 @@ const updateTab = (tab) => {
   font-size: 0.98rem;
 }
 
-.summary {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.summary-card {
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.summary-label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--text-soft);
-  font-size: 0.8rem;
-}
-
-.summary-value {
-  font-size: 1.2rem;
-  letter-spacing: -0.03em;
-}
-
-.tabs {
-  margin-top: 18px;
-  font-size: 0.95rem;
-}
-
 @media (max-width: 480px) {
   .title {
     font-size: 1.7rem;
-  }
-
-  .summary {
-    grid-template-columns: 1fr;
-  }
-
-  .tabs {
-    font-size: 0.9rem;
   }
 }
 </style>

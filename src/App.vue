@@ -25,71 +25,25 @@
 
 -->
 <script setup>
-import { ref, computed } from 'vue';
-import {
-  setTodoLocalStorage,
-  getTodosFromLocalStorage,
-} from './hooks/useLocalStorage';
+import { useTodos } from './hooks/useTodos';
 
 //Components
 import TodoInput from './components/TodoInput.vue';
 import TodoHeader from './components/TodoHeader.vue';
 import TodoList from './components/TodoList.vue';
 
-const todos = ref(getTodosFromLocalStorage());
-const current = ref('all');
-
-const computedTodos = computed(() => {
-  const filteredTodos =
-    current.value === 'all'
-      ? todos.value
-      : todos.value.filter((v) => v.completed);
-
-  return [...filteredTodos].sort((a, b) => {
-    return Number(a.completed) - Number(b.completed);
-  });
-});
-
-const completedCount = computed(() => {
-  return todos.value.filter((v) => v.completed).length;
-});
-
-const remainingCount = computed(() => {
-  return todos.value.length - completedCount.value;
-});
-
-const updateTab = (tab) => {
-  current.value = tab;
-};
-
-const addTodo = (inputMsg) => {
-  todos.value.push({
-    id: new Date().getTime(),
-    msg: inputMsg.trim(),
-    completed: false,
-    editable: false,
-  });
-  setTodoLocalStorage(todos.value);
-};
-
-const deleteTodo = (id) => {
-  todos.value = todos.value.filter((v) => v.id !== id);
-  setTodoLocalStorage(todos.value);
-};
-
-const updateTodo = (id) => {
-  todos.value = todos.value.map((v) =>
-    v.id === id ? { ...v, completed: !v.completed } : v,
-  );
-  setTodoLocalStorage(todos.value);
-};
-
-const editTodo = (item, newMsg) => {
-  todos.value = todos.value.map((v) => {
-    return v.id === item.id ? { ...v, msg: newMsg.trim() } : v;
-  });
-  setTodoLocalStorage(todos.value);
-};
+const {
+  todos,
+  current,
+  computedTodos,
+  completedCount,
+  remainingCount,
+  updateTab,
+  addTodo,
+  deleteTodo,
+  updateTodo,
+  editTodo,
+} = useTodos();
 </script>
 <template>
   <div class="app-shell">
