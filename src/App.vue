@@ -44,7 +44,7 @@ const updateTab = (tab) => {
 
 const addTodo = (inputMsg) => {
   todos.value.push({
-    id: Math.random(),
+    id: new Date().getTime(),
     msg: inputMsg,
     completed: false,
     editable: false,

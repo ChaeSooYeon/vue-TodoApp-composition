@@ -58,6 +58,7 @@ const toggleEditTodo = (id, prvMsg) => {
         class="todo__item-text--editable"
         type="text"
         v-model="newMsg"
+        @keydown.enter="editTodo(item)"
       />
       <span
         v-if="!item.editable"
