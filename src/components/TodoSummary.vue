@@ -16,8 +16,8 @@ defineProps({
 
 const summaryItems = [
   { label: '전체', key: 'total' },
-  { label: '완료', key: 'completed' },
   { label: '진행 중', key: 'remaining' },
+  { label: '완료', key: 'completed' },
 ];
 </script>
 
