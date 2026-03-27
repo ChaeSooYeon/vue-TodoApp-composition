@@ -109,35 +109,82 @@
 
 이후 카드가 의도한 최대 폭까지 정상적으로 넓어질 수 있게 됐다.
 
+### 8. 스타일 구조 리팩토링
+
+초기에는 스타일이 `main.css` 한 파일에 많이 모여 있어 수정 범위를 추적하기가 어려웠다. 이를 줄이기 위해 스타일 책임을 나누고, 반복되는 패턴은 utility 클래스로 정리했다.
+
+- 전역 스타일은 `src/assets/main.css`에 유지
+- 각 컴포넌트의 세부 스타일은 `scoped style`로 이동
+- 클래스 이름을 컴포넌트 문맥에 맞게 단순화
+- 카드, 버튼, 입력창, segmented tab 같은 반복 패턴은 공통 utility 클래스로 추출
+
+이후 스타일 수정 시 관련 컴포넌트만 보면 되는 구조가 됐다.
+
+### 9. 헤더 컴포넌트 분리
+
+`TodoHeader.vue` 안에 함께 있던 요약 카드와 탭 UI를 역할별로 분리했다.
+
+- `TodoSummary.vue`: 전체 / 완료 / 진행중 요약 카드
+- `TodoTabs.vue`: 전체 / 완료 탭 전환
+- `TodoHeader.vue`: 제목과 설명, 하위 컴포넌트 조합만 담당
+
+이 구조로 헤더의 관심사가 더 명확해졌고, 부분 UI 수정 시 영향 범위도 줄었다.
+
+### 10. 리스트 아이템 컴포넌트 분리
+
+`TodoList.vue`에 있던 개별 item 마크업과 상호작용 로직을 `TodoListItem.vue`로 분리했다.
+
+- `TodoList.vue`: 목록 순회와 빈 상태 처리
+- `TodoListItem.vue`: 체크박스, 수정 모드, 삭제/수정 버튼, 완료 상태 표시
+
+아이템 내부 수정 상태(`isEditing`)와 입력값(`newMsg`)도 함께 이동해서 컴포넌트 책임이 자연스러워졌다.
+
+### 11. `useTodos.js`로 상태 로직 추출
+
+초기에는 `App.vue`가 상태 관리와 화면 조립을 모두 담당했다. 이후 투두 관련 상태와 핸들러를 `src/hooks/useTodos.js`로 이동했다.
+
+- `todos`, `current` 상태 관리
+- `computedTodos`, `completedCount`, `remainingCount` 계산
+- `addTodo`, `deleteTodo`, `updateTodo`, `editTodo`, `updateTab` 핸들러 관리
+
+이후 `App.vue`는 화면 조립 역할에 더 집중하게 되었고, 투두 도메인 로직은 별도 hook에서 읽기 쉬운 형태로 관리하게 됐다.
+
 ## 파일별 현재 역할
 
 - `src/App.vue`
-  - 전체 상태 관리
-  - `localStorage` 초기 데이터 로드
-  - 필터링, 정렬, 카운트 계산
-  - 하위 컴포넌트 이벤트 처리
+  - 화면 조립
+  - 주요 컴포넌트 연결
 - `src/components/TodoHeader.vue`
-  - 상단 제목, 요약 정보, 탭 전환 UI
+  - 상단 제목 및 헤더 조합
+- `src/components/TodoSummary.vue`
+  - 전체 / 완료 / 진행중 요약 카드
+- `src/components/TodoTabs.vue`
+  - 전체 / 완료 탭 전환 UI
 - `src/components/TodoInput.vue`
   - 입력 상태 관리 및 할 일 추가 이벤트 발생
 - `src/components/TodoList.vue`
-  - 목록 출력
+  - 목록 순회
+  - 빈 상태 처리
+- `src/components/TodoListItem.vue`
+  - 개별 할 일 항목 UI
   - 완료 토글 / 수정 / 삭제 이벤트 발생
   - 수정 input 토글 상태 관리
 - `src/hooks/useLocalStorage.js`
   - 투두 데이터 읽기 / 저장
+- `src/hooks/useTodos.js`
+  - 투두 상태, 계산값, 이벤트 핸들러 관리
 - `src/assets/main.css`
-  - 전반적인 앱 UI 스타일
+  - 전역 토큰, 공통 utility 스타일
 
 ## 현재 구조에서의 설계 기준
 
 이 프로젝트는 다음 기준으로 역할을 나누는 것이 가장 자연스럽다.
 
 - 저장소 역할: `useLocalStorage.js`
-- 화면용 상태 가공: `App.vue`
+- 화면용 상태 가공 및 핸들러: `useTodos.js`
 - UI 상호작용: 각 컴포넌트
 
-즉, 저장 유틸은 읽기/쓰기만 담당하고, 정렬/필터링/카운트 같은 UI 로직은 `App.vue`의 `computed`에서 처리하는 구조다.
+즉, 저장 유틸은 읽기/쓰기만 담당하고, 정렬/필터링/카운트 같은 화면용 로직은 `useTodos.js`에서 처리하며, 컴포넌트는 UI 렌더링과 상호작용에 집중하는 구조다.
 
 ## 현재 확인된 기능 목록
 
