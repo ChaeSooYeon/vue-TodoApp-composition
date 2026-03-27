@@ -59,6 +59,9 @@ export const useTodos = () => {
   };
 
   const deleteAllTodos = () => {
+    const shouldDelete = window.confirm('전체 할 일 항목을 모두 삭제할까요?');
+    if (!shouldDelete) return;
+
     todos.value = [];
     setTodoLocalStorage(todos.value);
   };
