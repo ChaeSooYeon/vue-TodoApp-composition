@@ -10,7 +10,8 @@ const emit = defineEmits(['update-tab']);
 
 const tabs = [
   { label: '전체', value: 'all' },
-  { label: '완료', value: 'completed' },
+  { label: '진행중', value: 'progress' },
+  { label: '완료', value: 'done' },
 ];
 
 const updateTab = (tab) => {

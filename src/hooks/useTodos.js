@@ -4,6 +4,11 @@ import {
   setTodoLocalStorage,
 } from './useLocalStorage';
 
+const TODO_STATUS = {
+  progress: 'progress',
+  done: 'done',
+};
+
 export const useTodos = () => {
   const todos = ref(getTodosFromLocalStorage());
   const current = ref('all');
@@ -12,15 +17,15 @@ export const useTodos = () => {
     const filteredTodos =
       current.value === 'all'
         ? todos.value
-        : todos.value.filter((todo) => todo.completed);
+        : todos.value.filter((todo) => todo.status === current.value);
 
     return [...filteredTodos].sort((a, b) => {
-      return Number(a.completed) - Number(b.completed);
+      return Number(a.status === TODO_STATUS.done) - Number(b.status === TODO_STATUS.done);
     });
   });
 
   const completedCount = computed(() => {
-    return todos.value.filter((todo) => todo.completed).length;
+    return todos.value.filter((todo) => todo.status === TODO_STATUS.done).length;
   });
 
   const remainingCount = computed(() => {
@@ -32,10 +37,13 @@ export const useTodos = () => {
   };
 
   const addTodo = (inputMsg) => {
+    const trimmedMsg = inputMsg.trim();
+    if (!trimmedMsg) return;
+
     todos.value.push({
       id: new Date().getTime(),
-      msg: inputMsg.trim(),
-      completed: false,
+      msg: trimmedMsg,
+      status: TODO_STATUS.progress,
       editable: false,
     });
     setTodoLocalStorage(todos.value);
@@ -48,7 +56,15 @@ export const useTodos = () => {
 
   const updateTodo = (id) => {
     todos.value = todos.value.map((todo) =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      todo.id === id
+        ? {
+            ...todo,
+            status:
+              todo.status === TODO_STATUS.done
+                ? TODO_STATUS.progress
+                : TODO_STATUS.done,
+          }
+        : todo,
     );
     setTodoLocalStorage(todos.value);
   };

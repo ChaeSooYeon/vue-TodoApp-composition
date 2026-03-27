@@ -40,11 +40,11 @@ const toggleEditTodo = () => {
 </script>
 
 <template>
-  <div class="item u-card u-card-hover" :class="{ 'item-completed': item.completed }">
+  <div class="item u-card u-card-hover" :class="{ 'item-done': item.status === 'done' }">
     <input
       type="checkbox"
       :id="`chk${item.id}`"
-      :checked="item.completed"
+      :checked="item.status === 'done'"
       @click="updateTodo"
     />
     <label :for="`chk${item.id}`" class="checkbox-label"></label>
@@ -157,12 +157,12 @@ const toggleEditTodo = () => {
   color: var(--danger);
 }
 
-.item-completed {
+.item-done {
   background: rgba(241, 245, 249, 0.9);
   border-color: rgba(200, 210, 224, 0.8);
 }
 
-.item-completed .item-text {
+.item-done .item-text {
   text-decoration: line-through;
   color: var(--text-soft);
 }
