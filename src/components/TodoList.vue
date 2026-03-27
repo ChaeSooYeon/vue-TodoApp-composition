@@ -9,8 +9,27 @@
 <script setup>
 import TodoListItem from './TodoListItem.vue';
 
-const props = defineProps(['todos']);
-const emit = defineEmits(['delete-todo', 'update-todo', 'edit-todo']);
+const props = defineProps({
+  todos: {
+    type: Array,
+    default: () => [],
+  },
+  current: {
+    type: String,
+    default: 'all',
+  },
+  completedCount: {
+    type: Number,
+    default: 0,
+  },
+});
+
+const emit = defineEmits([
+  'delete-todo',
+  'delete-done-todos',
+  'update-todo',
+  'edit-todo',
+]);
 
 const deleteTodo = (id) => {
   emit('delete-todo', id);
@@ -23,9 +42,29 @@ const updateTodo = (id) => {
 const editTodo = (item, newMsg) => {
   emit('edit-todo', item, newMsg);
 };
+
+const deleteDoneTodos = () => {
+  emit('delete-done-todos');
+};
+
+const actionMessage =
+  props.current === 'progress'
+    ? '진행중 탭에서는 삭제할 완료 항목이 없어요.'
+    : '완료된 항목을 한 번에 정리할 수 있어요.';
 </script>
 <template>
   <div class="list">
+    <div class="list-actions">
+      <p class="list-caption">{{ actionMessage }}</p>
+      <button
+        class="clear-btn"
+        type="button"
+        :disabled="props.completedCount === 0 || props.current === 'progress'"
+        @click="deleteDoneTodos"
+      >
+        완료 항목 삭제
+      </button>
+    </div>
     <TodoListItem
       v-for="item in props.todos"
       :key="item.id"
@@ -50,6 +89,49 @@ const editTodo = (item, newMsg) => {
   scrollbar-color: rgba(148, 163, 184, 0.65) transparent;
 }
 
+.list-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.list-caption {
+  color: var(--text-body);
+  font-size: 0.9rem;
+}
+
+.clear-btn {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--text-body);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.clear-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(221, 77, 99, 0.2);
+  background: rgba(255, 244, 246, 0.96);
+  color: var(--danger);
+}
+
+.clear-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .list::-webkit-scrollbar {
   width: 6px;
 }
@@ -65,6 +147,7 @@ const editTodo = (item, newMsg) => {
   align-items: center;
   justify-content: center;
   height: 100%;
+  max-height: 370px;
   text-align: center;
   border: 1px dashed rgba(148, 163, 184, 0.35);
   border-radius: 24px;
@@ -73,6 +156,15 @@ const editTodo = (item, newMsg) => {
 }
 
 @media (max-width: 480px) {
+  .list-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .clear-btn {
+    width: 100%;
+  }
+
   .list {
     height: auto;
     max-height: 46vh;

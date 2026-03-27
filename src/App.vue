@@ -15,6 +15,7 @@ const {
   updateTab,
   addTodo,
   deleteTodo,
+  deleteDoneTodos,
   updateTodo,
   editTodo,
 } = useTodos();
@@ -30,7 +31,10 @@ const {
     />
     <TodoList
       :todos="computedTodos"
+      :current="current"
+      :completed-count="completedCount"
       @delete-todo="deleteTodo"
+      @delete-done-todos="deleteDoneTodos"
       @update-todo="updateTodo"
       @edit-todo="editTodo"
     />
