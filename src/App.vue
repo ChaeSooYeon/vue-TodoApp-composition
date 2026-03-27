@@ -43,7 +43,7 @@ const {
   width: 100%;
   max-width: 720px;
   padding: 24px;
-  border-radius: 28px;
+  border-radius: 18px;
   border: 1px solid var(--card-border);
   background: var(--card-bg);
   box-shadow: var(--shadow-lg);
@@ -55,7 +55,7 @@ const {
     width: 100%;
     min-height: calc(100vh - 28px);
     padding: 20px;
-    border-radius: 24px;
+    border-radius: 16px;
   }
 }
 </style>

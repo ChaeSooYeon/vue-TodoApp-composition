@@ -81,7 +81,7 @@ const toggleEditTodo = () => {
 .item {
   min-height: 68px;
   padding: 14px;
-  border-radius: 22px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -101,7 +101,7 @@ const toggleEditTodo = () => {
   flex-grow: 1;
   margin: 0 4px;
   padding: 10px 12px;
-  border-radius: 14px;
+  border-radius: 10px;
   background: rgba(241, 245, 255, 0.9);
   font-size: 1rem;
   color: var(--text-strong);
@@ -122,7 +122,7 @@ const toggleEditTodo = () => {
   width: 24px;
   height: 24px;
   border: 2px solid rgba(148, 163, 184, 0.8);
-  border-radius: 8px;
+  border-radius: 6px;
   background: #ffffff;
   position: relative;
   flex-shrink: 0;
@@ -149,7 +149,7 @@ const toggleEditTodo = () => {
 .item input[type='checkbox']:checked + .checkbox-label {
   border-color: var(--success);
   background: var(--success);
-  box-shadow: 0 8px 16px rgba(15, 159, 119, 0.24);
+  box-shadow: 0 3px 8px rgba(15, 159, 119, 0.16);
 }
 
 .delete-btn {

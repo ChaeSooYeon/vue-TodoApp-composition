@@ -39,7 +39,7 @@ const handleEnter = (event) => {
   align-items: center;
   gap: 10px;
   padding: 14px;
-  border-radius: 22px;
+  border-radius: 14px;
 }
 
 .input-field {
@@ -57,7 +57,7 @@ const handleEnter = (event) => {
   flex-shrink: 0;
   height: 48px;
   padding: 0 18px;
-  border-radius: 16px;
+  border-radius: 12px;
   font-size: 0.92rem;
   font-weight: 700;
 }
