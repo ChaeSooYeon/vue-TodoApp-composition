@@ -15,6 +15,7 @@ const {
   updateTab,
   addTodo,
   deleteTodo,
+  deleteAllTodos,
   deleteDoneTodos,
   updateTodo,
   editTodo,
@@ -34,6 +35,7 @@ const {
       :current="current"
       :completed-count="completedCount"
       @delete-todo="deleteTodo"
+      @delete-all-todos="deleteAllTodos"
       @delete-done-todos="deleteDoneTodos"
       @update-todo="updateTodo"
       @edit-todo="editTodo"

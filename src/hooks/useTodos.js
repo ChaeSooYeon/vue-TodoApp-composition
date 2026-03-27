@@ -58,11 +58,18 @@ export const useTodos = () => {
     setTodoLocalStorage(todos.value);
   };
 
+  const deleteAllTodos = () => {
+    todos.value = [];
+    setTodoLocalStorage(todos.value);
+  };
+
   const deleteDoneTodos = () => {
     const shouldDelete = window.confirm('완료된 항목을 모두 삭제할까요?');
     if (!shouldDelete) return;
 
-    todos.value = todos.value.filter((todo) => todo.status !== TODO_STATUS.done);
+    todos.value = todos.value.filter(
+      (todo) => todo.status !== TODO_STATUS.done,
+    );
     setTodoLocalStorage(todos.value);
   };
 
@@ -97,6 +104,7 @@ export const useTodos = () => {
     updateTab,
     addTodo,
     deleteTodo,
+    deleteAllTodos,
     deleteDoneTodos,
     updateTodo,
     editTodo,

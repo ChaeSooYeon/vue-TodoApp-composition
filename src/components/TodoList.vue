@@ -1,11 +1,3 @@
-<!-- 
-    사용자가 입력한 할 일 목록의 데이터는 todo에 저장되어 있다.
-    상태(전체, 완료)에 따라 필터링된 목록데이터는
-    coumputed 옵션 속성에서 정의한 todos 데이터에 저장된다.
-    todos 데이터를 TodoList 컴포넌트에 전달한다.
-    전달받은 todos 를 출력한다. 
-
--->
 <script setup>
 import TodoListItem from './TodoListItem.vue';
 
@@ -26,6 +18,7 @@ const props = defineProps({
 
 const emit = defineEmits([
   'delete-todo',
+  'delete-all-todos',
   'delete-done-todos',
   'update-todo',
   'edit-todo',
@@ -43,19 +36,25 @@ const editTodo = (item, newMsg) => {
   emit('edit-todo', item, newMsg);
 };
 
+const deleteAllTodos = (id) => {
+  emit('delete-all-todos', id);
+};
+
 const deleteDoneTodos = () => {
   emit('delete-done-todos');
 };
-
-const actionMessage =
-  props.current === 'progress'
-    ? '진행중 탭에서는 삭제할 완료 항목이 없어요.'
-    : '완료된 항목을 한 번에 정리할 수 있어요.';
 </script>
 <template>
   <div class="list">
     <div class="list-actions">
-      <p class="list-caption">{{ actionMessage }}</p>
+      <button
+        class="clear-btn"
+        type="button"
+        :disabled="props.todos.length === 0"
+        @click="deleteAllTodos"
+      >
+        전체 항목 삭제
+      </button>
       <button
         class="clear-btn"
         type="button"
@@ -92,7 +91,7 @@ const actionMessage =
 .list-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: end;
   gap: 12px;
   margin-bottom: 10px;
 }
