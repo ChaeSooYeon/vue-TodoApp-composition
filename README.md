@@ -24,8 +24,11 @@ Vue 3 기반 TodoList Application 1.1 앱입니다.
 - Options API에서 Composition API로 리팩토링
 - `script setup` 문법 적용
 - `localStorage` 자동 저장 / 복원 기능 추가
+- `status(progress / done)` 기반 상태 관리
 - 완료 개수 / 남은 일 개수 표시
 - 완료된 항목 하단 정렬
+- 전체 / 진행중 / 완료 탭 필터링
+- 한글 IME 입력 중 `Enter` 중복 등록 버그 수정
 
 #### 기술
 
@@ -61,7 +64,7 @@ todo-app-composition/
 │  ├─ components/
 │  │  ├─ TodoHeader.vue          # 헤더 조합 컴포넌트
 │  │  ├─ TodoSummary.vue         # 전체/완료/진행중 요약 카드
-│  │  ├─ TodoTabs.vue            # 전체/완료 탭 전환
+│  │  ├─ TodoTabs.vue            # 전체/진행중/완료 탭 전환
 │  │  ├─ TodoInput.vue           # 할 일 입력 및 등록
 │  │  ├─ TodoList.vue            # 목록 순회 및 빈 상태 처리
 │  │  └─ TodoListItem.vue        # 개별 할 일 항목 UI와 상호작용
@@ -86,6 +89,8 @@ todo-app-composition/
 - 부모 컴포넌트와 자식 컴포넌트의 역할을 나눠 상태 흐름을 설계하는 방법
 - `useTodos` 같은 composable로 상태와 비즈니스 로직을 분리하는 방법
 - 큰 컴포넌트를 요약/탭/아이템 단위로 분리하는 컴포넌트 설계 방법
+- boolean 상태를 `status` 문자열 구조로 확장하는 상태 모델링 방법
+- 한글 IME 조합 입력과 키보드 이벤트를 함께 다루는 방법
 
 ## 트러블슈팅
 

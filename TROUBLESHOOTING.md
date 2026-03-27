@@ -98,3 +98,20 @@
 
 - `todos`, `current`, `computedTodos`, 카운트 계산, CRUD 핸들러를 `useTodos.js`로 이동했다.
 - `App.vue`는 hook의 반환값을 받아 하위 컴포넌트에 연결만 하도록 단순화했다.
+
+## 7. 한글 입력 중 Enter로 todo가 여러 번 등록되던 문제
+
+### 증상
+
+- 마우스로 등록할 때는 괜찮았지만, 한글 입력기 사용 중 `Enter`로 todo를 추가하면 조합 중인 값이 여러 번 등록됐다.
+
+### 원인
+
+- 한글 IME 조합 중에는 입력 확정과 `Enter` 키 이벤트가 함께 발생할 수 있다.
+- 조합 상태를 고려하지 않고 `keydown.enter`에서 바로 등록하면 중간 조합 문자열까지 todo로 추가될 수 있다.
+
+### 해결
+
+- `TodoInput.vue`에 `compositionstart`, `compositionend`를 추가해 조합 상태를 추적했다.
+- `event.isComposing` 또는 조합 중 상태일 때는 `Enter` 등록을 막았다.
+- 입력 단계와 `useTodos.js` 양쪽에서 빈 문자열 추가도 함께 차단했다.

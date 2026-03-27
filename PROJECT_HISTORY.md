@@ -149,6 +149,27 @@
 
 이후 `App.vue`는 화면 조립 역할에 더 집중하게 되었고, 투두 도메인 로직은 별도 hook에서 읽기 쉬운 형태로 관리하게 됐다.
 
+### 12. todo 상태 모델 변경
+
+초기에는 todo 완료 여부를 boolean `completed`로 관리했지만, 이후 탭 요구사항이 `전체 / 진행중 / 완료`로 확장되면서 상태값 자체를 더 명확히 표현할 필요가 생겼다.
+
+- `completed` 대신 `status` 사용
+- 상태값은 `progress` / `done`으로 관리
+- 필터링, 정렬, 완료 개수 계산을 모두 `status` 기준으로 변경
+- 체크박스 토글도 `progress <-> done` 전환 방식으로 수정
+
+이번 변경에서는 마이그레이션을 의도적으로 넣지 않고, 새 구조 기준으로만 동작하도록 유지했다.
+
+### 13. 한글 IME 입력 중 Enter 중복 등록 버그 수정
+
+마우스로 등록할 때는 문제가 없었지만, 한글 입력 중 `Enter`로 todo를 추가하면 조합 중인 글자가 중간 단계마다 등록되는 문제가 있었다.
+
+- `TodoInput.vue`에서 `compositionstart`, `compositionend` 처리 추가
+- `event.isComposing` 또는 조합 중 상태에서는 `Enter` 등록 차단
+- 입력값은 `trim()` 후 빈 문자열일 경우 추가하지 않도록 방어 로직 추가
+
+이후 한글 조합 입력이 끝난 뒤의 `Enter`에서만 정상적으로 todo가 등록되도록 정리했다.
+
 ## 파일별 현재 역할
 
 - `src/App.vue`
@@ -159,7 +180,7 @@
 - `src/components/TodoSummary.vue`
   - 전체 / 완료 / 진행중 요약 카드
 - `src/components/TodoTabs.vue`
-  - 전체 / 완료 탭 전환 UI
+  - 전체 / 진행중 / 완료 탭 전환 UI
 - `src/components/TodoInput.vue`
   - 입력 상태 관리 및 할 일 추가 이벤트 발생
 - `src/components/TodoList.vue`
@@ -173,6 +194,7 @@
   - 투두 데이터 읽기 / 저장
 - `src/hooks/useTodos.js`
   - 투두 상태, 계산값, 이벤트 핸들러 관리
+  - `status(progress / done)` 기반 필터링 및 정렬 관리
 - `src/assets/main.css`
   - 전역 토큰, 공통 utility 스타일
 
@@ -190,13 +212,15 @@
 
 - `Enter` 또는 버튼 클릭으로 할 일 추가
 - 체크박스로 완료 상태 변경
+- `status(progress / done)` 기반 상태 전환
 - 수정 아이콘 클릭 시 수정 모드 전환
 - 수정 후 Enter 또는 체크 아이콘으로 저장
 - 삭제 아이콘 클릭 시 항목 삭제
 - `localStorage` 기반 새로고침 후 데이터 유지
-- 상단 탭으로 전체 / 완료 목록 전환
+- 상단 탭으로 전체 / 진행중 / 완료 목록 전환
 - 상단 요약 카드에 전체 / 완료 / 진행중 개수 표시
 - 완료 항목 자동 하단 정렬
+- 한글 IME 입력 중 `Enter` 중복 등록 방지
 
 ## 확인 및 검증
 
