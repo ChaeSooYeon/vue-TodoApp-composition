@@ -20,12 +20,16 @@ export const useTodos = () => {
         : todos.value.filter((todo) => todo.status === current.value);
 
     return [...filteredTodos].sort((a, b) => {
-      return Number(a.status === TODO_STATUS.done) - Number(b.status === TODO_STATUS.done);
+      return (
+        Number(a.status === TODO_STATUS.done) -
+        Number(b.status === TODO_STATUS.done)
+      );
     });
   });
 
   const completedCount = computed(() => {
-    return todos.value.filter((todo) => todo.status === TODO_STATUS.done).length;
+    return todos.value.filter((todo) => todo.status === TODO_STATUS.done)
+      .length;
   });
 
   const remainingCount = computed(() => {
@@ -40,7 +44,7 @@ export const useTodos = () => {
     const trimmedMsg = inputMsg.trim();
     if (!trimmedMsg) return;
 
-    todos.value.push({
+    todos.value.unshift({
       id: new Date().getTime(),
       msg: trimmedMsg,
       status: TODO_STATUS.progress,
